@@ -1,0 +1,119 @@
+{
+  "project_info": {
+    "project_number": "346386381295",
+    "firebase_url": "https://smartplaner-b98ed-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "smartplaner-b98ed",
+    "storage_bucket": "smartplaner-b98ed.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:346386381295:android:0ed02873006bf3ae39de1a",
+        "android_client_info": {
+          "package_name": "com.example.smart_plan_admin"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "346386381295-4fovuio593dpr0s08rgr86e0iv5lg6d1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCaXZpwl9TjYKAk7IJsQ9Ndz38PUEQRFWI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "346386381295-4fovuio593dpr0s08rgr86e0iv5lg6d1.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "346386381295-6s0mg7265ttnchtc3t3g8gllco39ba12.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.smartPlanAdmin"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:346386381295:android:8b5df1e0b15c395f39de1a",
+        "android_client_info": {
+          "package_name": "com.example.smart_planner_agent_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "346386381295-4fovuio593dpr0s08rgr86e0iv5lg6d1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCaXZpwl9TjYKAk7IJsQ9Ndz38PUEQRFWI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "346386381295-4fovuio593dpr0s08rgr86e0iv5lg6d1.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "346386381295-6s0mg7265ttnchtc3t3g8gllco39ba12.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.smartPlanAdmin"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:346386381295:android:8b36be82019b0f5839de1a",
+        "android_client_info": {
+          "package_name": "com.example.smart_planner_users_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "346386381295-4fovuio593dpr0s08rgr86e0iv5lg6d1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCaXZpwl9TjYKAk7IJsQ9Ndz38PUEQRFWI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "346386381295-4fovuio593dpr0s08rgr86e0iv5lg6d1.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "346386381295-6s0mg7265ttnchtc3t3g8gllco39ba12.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.smartPlanAdmin"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
