@@ -50,7 +50,16 @@ class CommandeList extends StatelessWidget {
                     return CommandeCard(groupe: groupe);
                   }).toList();
 
-                  return Column(children: widgets);
+                  if (widgets.isEmpty) {
+                    return const Expanded(
+                      child: Center(
+                        child: Text("Vous n'avez aucune commande courante"),
+                      ),
+                    );
+                  }
+
+                  return SingleChildScrollView(
+                      child: Column(children: widgets));
                 }
               }
               return const Center(child: CircularProgressIndicator());

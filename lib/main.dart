@@ -10,6 +10,7 @@ import 'package:smart_planner_agent_app/controllers/commande_fetcher.dart';
 import 'package:smart_planner_agent_app/controllers/edit_personnal_info.dart';
 import 'package:smart_planner_agent_app/controllers/navigator_controller.dart';
 import 'package:smart_planner_agent_app/controllers/residence_detail_controller.dart';
+import 'package:smart_planner_agent_app/controllers/role_controller.dart';
 import 'package:smart_planner_agent_app/firebase_options.dart';
 import 'package:smart_planner_agent_app/screens/auth/login/login_page.dart';
 import 'package:smart_planner_agent_app/screens/auth/reset/reset_password.dart';
@@ -17,6 +18,8 @@ import 'package:smart_planner_agent_app/screens/auth/signup/signup_page.dart';
 import 'package:smart_planner_agent_app/screens/home/home_page.dart';
 import 'package:smart_planner_agent_app/screens/home/sub_pages/commandes/controlPage/control_page.dart';
 import 'package:smart_planner_agent_app/screens/home/sub_pages/profile/editPersonnelInfo/edit_personnel_info.dart';
+import 'package:smart_planner_agent_app/screens/home/sub_pages/profile/personaliseRolePage/personalise_role_page.dart';
+import 'package:smart_planner_agent_app/screens/home/sub_pages/profile/rolePage/role_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -54,7 +57,13 @@ class MyApp extends StatelessWidget {
                     child: EditPersonnelInfoPage(),
                   )),
           GetPage(
-              name: ControlPage.id, page: () => SafeArea(child: ControlPage()))
+              name: ControlPage.id, page: () => SafeArea(child: ControlPage())),
+          GetPage(name: RolePage.id, page: () => SafeArea(child: RolePage())),
+          GetPage(
+              name: PersonaliseRolePage.id,
+              page: () => SafeArea(
+                    child: PersonaliseRolePage(),
+                  ))
         ],
         initialBinding: BindingsBuilder(() {
           Get.put(AuthController(), permanent: true);
@@ -63,6 +72,7 @@ class MyApp extends StatelessWidget {
           Get.put(AgentsFetcher(), permanent: true);
           Get.put(CommandeFetcher(), permanent: true);
           Get.put(ResidenceDetailController(), permanent: true);
+          Get.put(RoleController(), permanent: true);
         }),
         theme: ThemeData(
             primarySwatch: Colors.green,
