@@ -1,5 +1,9 @@
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -17,9 +21,11 @@ import 'package:smart_planner_agent_app/screens/auth/reset/reset_password.dart';
 import 'package:smart_planner_agent_app/screens/auth/signup/signup_page.dart';
 import 'package:smart_planner_agent_app/screens/home/home_page.dart';
 import 'package:smart_planner_agent_app/screens/home/sub_pages/commandes/controlPage/control_page.dart';
+import 'package:smart_planner_agent_app/screens/home/sub_pages/messaging/chat_page.dart';
 import 'package:smart_planner_agent_app/screens/home/sub_pages/profile/editPersonnelInfo/edit_personnel_info.dart';
 import 'package:smart_planner_agent_app/screens/home/sub_pages/profile/personaliseRolePage/personalise_role_page.dart';
 import 'package:smart_planner_agent_app/screens/home/sub_pages/profile/rolePage/role_page.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -28,7 +34,70 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   await FirebaseAuth.instance.authStateChanges().first;
+
+  // print('firebase messaging token');
+  // print(await FirebaseMessaging.instance.getToken());
+  await initializeNotifications();
+
   runApp(const MyApp());
+}
+
+Future<void> initializeNotifications() async {
+  if (kIsWeb || Platform.isIOS) {
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+
+    NotificationSettings settings = await messaging.requestPermission(
+      alert: true,
+      announcement: false,
+      badge: true,
+      carPlay: false,
+      criticalAlert: false,
+      provisional: false,
+      sound: true,
+    );
+  }
+
+  try {
+    if (GetPlatform.isMobile) {
+      final RemoteMessage? remoteMessage =
+          await FirebaseMessaging.instance.getInitialMessage();
+      if (remoteMessage != null) {
+        Get.defaultDialog(
+            title: "Nouvelle Mise à jour",
+            middleText:
+                "Nous avons fait une nouvelle mise a jour veuillez svp la faire",
+            confirm: ElevatedButton(
+                onPressed: () async {
+                  await launchUrl(
+                      Uri.parse(
+                          'https://play.google.com/store/apps/details?id=com.talos.smart_planner_users_app'),
+                      mode: LaunchMode.externalApplication);
+                },
+                child: const Text("Update")));
+      }
+      FirebaseMessaging.onMessage.listen((event) {
+        Get.defaultDialog(
+            title: "Nouvelle Mise à jour",
+            middleText:
+                "Nous avons fait une nouvelle mise a jour veuillez svp la faire",
+            confirm: ElevatedButton(
+                onPressed: () async {
+                  await launchUrl(
+                      Uri.parse(
+                          'https://play.google.com/store/apps/details?id=com.talos.smart_planner_users_app'),
+                      mode: LaunchMode.externalApplication);
+                },
+                child: const Text("Update")));
+      });
+
+      FirebaseMessaging.onMessageOpenedApp.listen((event) async {
+        await launchUrl(
+            Uri.parse(
+                'https://play.google.com/store/apps/details?id=com.talos.smart_planner_users_app'),
+            mode: LaunchMode.externalApplication);
+      });
+    }
+  } catch (e) {}
 }
 
 class MyApp extends StatelessWidget {
@@ -63,7 +132,8 @@ class MyApp extends StatelessWidget {
               name: PersonaliseRolePage.id,
               page: () => SafeArea(
                     child: PersonaliseRolePage(),
-                  ))
+                  )),
+          GetPage(name: ChatPage.id, page: () => SafeArea(child: ChatPage()))
         ],
         initialBinding: BindingsBuilder(() {
           Get.put(AuthController(), permanent: true);

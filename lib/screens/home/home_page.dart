@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:smart_planner_agent_app/controllers/navigator_controller.dart';
 import 'package:smart_planner_agent_app/screens/home/sub_pages/commandes/commandes_list.dart';
+import 'package:smart_planner_agent_app/screens/home/sub_pages/messaging/messagerie_page.dart';
 import 'package:smart_planner_agent_app/screens/home/sub_pages/profile/profile_page.dart';
 import 'package:smart_planner_agent_app/widgets/logout_appbar.dart';
 
@@ -10,12 +11,12 @@ class HomePage extends GetView<NavigatorController> {
 
   static const id = "/home_page";
 
-  List<Widget> pages = [CommandeList(), ProfilePage()];
+  List<Widget> pages = [CommandeList(), MessageriePage(), ProfilePage()];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: LogoutAppBar("Commandes"),
+      appBar: LogoutAppBar(),
       body: Obx(
           () => IndexedStack(children: pages, index: controller.index.value)),
       bottomNavigationBar: CustomBottomNavigationBar(),
@@ -40,6 +41,8 @@ class CustomBottomNavigationBar extends StatelessWidget {
           },
           items: const [
             BottomNavigationBarItem(label: "Home", icon: Icon(Icons.home)),
+            BottomNavigationBarItem(
+                label: "Messagerie", icon: Icon(Icons.message)),
             BottomNavigationBarItem(
                 label: "Profile", icon: Icon(Icons.portrait))
           ]),

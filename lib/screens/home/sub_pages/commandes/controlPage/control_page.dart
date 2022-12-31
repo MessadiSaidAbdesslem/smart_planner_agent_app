@@ -145,7 +145,10 @@ class ControlPage extends StatelessWidget {
                         ));
                       }
                     }
-                    return Column(children: widgets);
+                    return Column(
+                        children: commandeFetcher.allRooms.isEmpty
+                            ? widgets
+                            : widgets);
                   });
                 }
 
