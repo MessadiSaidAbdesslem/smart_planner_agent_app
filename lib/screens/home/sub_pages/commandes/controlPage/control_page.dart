@@ -185,6 +185,7 @@ class ChamberRow extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(chamber.numero),
+            RoomStateWidget(chamber: chamber),
             Text(chamber.typologie),
             Obx(
               () => GestureDetector(
@@ -327,6 +328,61 @@ class AgentChip extends StatelessWidget {
               style: const TextStyle(color: Color(0xff6490E4)),
             )),
       ]),
+    );
+  }
+}
+
+class RoomStateWidget extends StatelessWidget {
+  const RoomStateWidget({
+    Key? key,
+    required this.chamber,
+  }) : super(key: key);
+
+  final Chambre chamber;
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+      stream: FirebaseFirestore.instance
+          .collection("commande")
+          .where("date",
+              isEqualTo: DateTime.now().toIso8601String().substring(0, 10))
+          .where('requestedRooms', arrayContains: chamber.id)
+          .snapshots(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.active) {
+          if (snapshot.hasData &&
+              snapshot.data != null &&
+              snapshot.data!.docs.isNotEmpty) {
+            return snapshot.data!.docs[0].data()['roomsAvailable']
+                        [chamber.id ?? "a"] !=
+                    null
+                ? snapshot.data!.docs[0].data()['roomsAvailable']
+                        [chamber.id ?? "a"]
+                    ? Container(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 5, horizontal: 7),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: Colors.green),
+                        child: const Text("Libre",
+                            style: TextStyle(color: Colors.white)),
+                      )
+                    : Container(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 5, horizontal: 7),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: Colors.red),
+                        child: const Text("Occupé",
+                            style: TextStyle(color: Colors.white)),
+                      )
+                : Text("N/A");
+          }
+        }
+
+        return const Text("N/A");
+      },
     );
   }
 }
