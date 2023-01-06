@@ -25,6 +25,7 @@ import 'package:smart_planner_agent_app/screens/home/sub_pages/messaging/chat_pa
 import 'package:smart_planner_agent_app/screens/home/sub_pages/profile/editPersonnelInfo/edit_personnel_info.dart';
 import 'package:smart_planner_agent_app/screens/home/sub_pages/profile/personaliseRolePage/personalise_role_page.dart';
 import 'package:smart_planner_agent_app/screens/home/sub_pages/profile/rolePage/role_page.dart';
+import 'package:smart_planner_agent_app/screens/splashscreen/splashscreen.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 void main() async {
@@ -107,9 +108,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return Sizer(
       builder: (context, orientation, deviceType) => GetMaterialApp(
-        initialRoute: FirebaseAuth.instance.currentUser == null
-            ? LoginPage.id
-            : HomePage.id,
+        initialRoute: SplashScreen.id,
         title: 'Smart planner agent',
         getPages: [
           GetPage(name: LoginPage.id, page: () => SafeArea(child: LoginPage())),
@@ -133,7 +132,8 @@ class MyApp extends StatelessWidget {
               page: () => SafeArea(
                     child: PersonaliseRolePage(),
                   )),
-          GetPage(name: ChatPage.id, page: () => SafeArea(child: ChatPage()))
+          GetPage(name: ChatPage.id, page: () => SafeArea(child: ChatPage())),
+          GetPage(name: SplashScreen.id, page: () => SplashScreen())
         ],
         initialBinding: BindingsBuilder(() {
           Get.put(AuthController(), permanent: true);

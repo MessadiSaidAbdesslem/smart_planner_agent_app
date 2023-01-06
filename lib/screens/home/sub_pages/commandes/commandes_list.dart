@@ -10,6 +10,7 @@ import 'package:smart_planner_agent_app/models/groupe.dart';
 import 'package:smart_planner_agent_app/models/residence.dart';
 import 'package:smart_planner_agent_app/screens/home/sub_pages/commandes/controlPage/control_page.dart';
 import 'package:smart_planner_agent_app/widgets/error_message_widget.dart';
+import 'package:step_progress_indicator/step_progress_indicator.dart';
 
 class CommandeList extends StatelessWidget {
   CommandeList({Key? key}) : super(key: key);
@@ -81,6 +82,12 @@ class CommandeCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Map<String, dynamic> tempMap = Map.from(groupe.chambersState);
+    tempMap.removeWhere(
+        (key, value) => value == Groupe.retour || value == null || value == "");
+    int percent = tempMap.isEmpty
+        ? 0
+        : (tempMap.length / groupe.chambersState.length * 100).toInt();
     return GestureDetector(
       onTap: () async {
         var res = await FirebaseFirestore.instance
@@ -104,6 +111,36 @@ class CommandeCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(20)),
         child: Stack(children: [
           ResidenceDataWidget(groupe: groupe),
+          Positioned(
+            top: 50,
+            left: 45.w - 50,
+            child: SizedBox(
+              height: 100,
+              width: 100,
+              child: CircularStepProgressIndicator(
+                padding: 0,
+                selectedColor: Colors.green,
+                unselectedColor: Colors.grey[200],
+                selectedStepSize: 22,
+                stepSize: 20,
+                roundedCap: (_, __) => true,
+                totalSteps:
+                    groupe.chambers.isEmpty ? 1 : groupe.chambers.length,
+                currentStep: groupe.chambers.isEmpty ? 0 : tempMap.length,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      '$percent %',
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 12.sp),
+                    ),
+                    SizedBox(height: 1.w),
+                  ],
+                ),
+              ),
+            ),
+          ),
           Positioned(
             child: Text(groupe.date),
             bottom: 10,

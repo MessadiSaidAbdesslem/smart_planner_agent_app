@@ -1,0 +1,15 @@
+{
+  "projects": {
+    "default": "smartplaner-b98ed"
+  },
+  "targets": {
+    "smartplaner-b98ed": {
+      "hosting": {
+        "agent": [
+          "smartagent"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}

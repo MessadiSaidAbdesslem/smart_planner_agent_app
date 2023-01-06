@@ -17,10 +17,7 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      throw UnsupportedError(
-        'DefaultFirebaseOptions have not been configured for web - '
-        'you can reconfigure this by running the FlutterFire CLI again.',
-      );
+      return web;
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
@@ -48,6 +45,17 @@ class DefaultFirebaseOptions {
         );
     }
   }
+
+  static const FirebaseOptions web = FirebaseOptions(
+    apiKey: 'AIzaSyCn9hcwLb4_zl_G4NLuqprjgzPyapV0Oew',
+    appId: '1:346386381295:web:94dad931927488cf39de1a',
+    messagingSenderId: '346386381295',
+    projectId: 'smartplaner-b98ed',
+    authDomain: 'smartplaner-b98ed.firebaseapp.com',
+    databaseURL: 'https://smartplaner-b98ed-default-rtdb.europe-west1.firebasedatabase.app',
+    storageBucket: 'smartplaner-b98ed.appspot.com',
+    measurementId: 'G-DSP37TQ1WK',
+  );
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyCaXZpwl9TjYKAk7IJsQ9Ndz38PUEQRFWI',
