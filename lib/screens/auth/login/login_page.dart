@@ -18,8 +18,8 @@ class LoginPage extends GetView<AuthController> {
           child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Text("Smart Board",
-              style: TextStyle(fontSize: 36, color: Colors.green)),
+          const Text("SmartBoard",
+              style: TextStyle(fontSize: 36, color: Colors.blue)),
           Container(
             margin: EdgeInsets.all(5.w),
             padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 5.w),

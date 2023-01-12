@@ -32,6 +32,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Firebase.initializeApp(
+
     options: DefaultFirebaseOptions.currentPlatform,
   );
   await FirebaseAuth.instance.authStateChanges().first;
@@ -66,7 +67,7 @@ Future<void> initializeNotifications() async {
         Get.defaultDialog(
             title: "Nouvelle Mise à jour",
             middleText:
-                "Nous avons fait une nouvelle mise a jour veuillez svp la faire",
+                "Veuillez installer la nouvelle version disponible",
             confirm: ElevatedButton(
                 onPressed: () async {
                   await launchUrl(
@@ -80,7 +81,7 @@ Future<void> initializeNotifications() async {
         Get.defaultDialog(
             title: "Nouvelle Mise à jour",
             middleText:
-                "Nous avons fait une nouvelle mise a jour veuillez svp la faire",
+                "Veuillez installer la nouvelle version disponible",
             confirm: ElevatedButton(
                 onPressed: () async {
                   await launchUrl(
@@ -108,6 +109,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return Sizer(
       builder: (context, orientation, deviceType) => GetMaterialApp(
+        debugShowCheckedModeBanner: false,
         initialRoute: SplashScreen.id,
         title: 'Smart planner agent',
         getPages: [
@@ -145,7 +147,7 @@ class MyApp extends StatelessWidget {
           Get.put(RoleController(), permanent: true);
         }),
         theme: ThemeData(
-            primarySwatch: Colors.green,
+            primarySwatch: Colors.blue,
             scaffoldBackgroundColor: const Color(0xFFF6F1F1),
             textTheme: GoogleFonts.poppinsTextTheme()),
       ),
