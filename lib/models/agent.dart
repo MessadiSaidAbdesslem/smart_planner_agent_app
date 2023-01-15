@@ -1,4 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:collection';
 import 'dart:convert';
 
 class Agent {
@@ -10,16 +11,17 @@ class Agent {
   String? role;
   bool supervisor;
   bool isAvailable;
-  Agent({
-    this.role,
-    required this.displayName,
-    required this.email,
-    required this.imageUrl,
-    required this.phoneNumber,
-    required this.uid,
-    required this.supervisor,
-    required this.isAvailable,
-  });
+  LinkedHashMap<String, bool> availability;
+  Agent(
+      {this.role,
+      required this.displayName,
+      required this.email,
+      required this.imageUrl,
+      required this.phoneNumber,
+      required this.uid,
+      required this.supervisor,
+      required this.isAvailable,
+      required this.availability});
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
@@ -30,7 +32,8 @@ class Agent {
       'uid': uid,
       'role': role,
       "supervisor": supervisor,
-      'isAvailable': isAvailable
+      'isAvailable': isAvailable,
+      'availability': availability
     };
   }
 
@@ -43,7 +46,9 @@ class Agent {
         imageUrl: map['imageUrl'] as String? ?? "",
         phoneNumber: map['phoneNumber'] as String? ?? "",
         uid: map['uid'] as String? ?? "",
-        role: map['role'] as String?);
+        role: map['role'] as String?,
+        availability: LinkedHashMap.from(
+            (map['availability'] ?? {}) as LinkedHashMap<dynamic, dynamic>));
   }
 
   String toJson() => json.encode(toMap());
