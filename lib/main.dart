@@ -70,8 +70,7 @@ Future<void> initializeNotifications() async {
       if (remoteMessage != null) {
         Get.defaultDialog(
             title: "Nouvelle Mise à jour",
-            middleText:
-                "Nous avons fait une nouvelle mise a jour veuillez svp la faire",
+            middleText: "Veuillez installer la nouvelle version disponible",
             confirm: ElevatedButton(
                 onPressed: () async {
                   await launchUrl(
@@ -84,8 +83,7 @@ Future<void> initializeNotifications() async {
       FirebaseMessaging.onMessage.listen((event) {
         Get.defaultDialog(
             title: "Nouvelle Mise à jour",
-            middleText:
-                "Nous avons fait une nouvelle mise a jour veuillez svp la faire",
+            middleText: "Veuillez installer la nouvelle version disponible",
             confirm: ElevatedButton(
                 onPressed: () async {
                   await launchUrl(
@@ -119,6 +117,7 @@ class MyApp extends StatelessWidget {
         ],
         supportedLocales: const [Locale('fr')],
         locale: const Locale('fr'),
+        debugShowCheckedModeBanner: false,
         initialRoute: SplashScreen.id,
         title: 'Smart planner agent',
         getPages: [
@@ -162,7 +161,7 @@ class MyApp extends StatelessWidget {
           Get.lazyPut(() => MyAvailabilityController(), fenix: true);
         }),
         theme: ThemeData(
-            primarySwatch: Colors.green,
+            primarySwatch: Colors.blue,
             scaffoldBackgroundColor: const Color(0xFFF6F1F1),
             textTheme: GoogleFonts.poppinsTextTheme()),
       ),
