@@ -12,6 +12,7 @@ import 'package:smart_planner_agent_app/controllers/agents_fetcher.dart';
 import 'package:smart_planner_agent_app/controllers/auth_controller.dart';
 import 'package:smart_planner_agent_app/controllers/commande_fetcher.dart';
 import 'package:smart_planner_agent_app/controllers/edit_personnal_info.dart';
+import 'package:smart_planner_agent_app/controllers/my_availability_controller.dart';
 import 'package:smart_planner_agent_app/controllers/navigator_controller.dart';
 import 'package:smart_planner_agent_app/controllers/residence_detail_controller.dart';
 import 'package:smart_planner_agent_app/controllers/role_controller.dart';
@@ -19,20 +20,23 @@ import 'package:smart_planner_agent_app/firebase_options.dart';
 import 'package:smart_planner_agent_app/screens/auth/login/login_page.dart';
 import 'package:smart_planner_agent_app/screens/auth/reset/reset_password.dart';
 import 'package:smart_planner_agent_app/screens/auth/signup/signup_page.dart';
+import 'package:smart_planner_agent_app/screens/availability/availability_page.dart';
 import 'package:smart_planner_agent_app/screens/home/home_page.dart';
 import 'package:smart_planner_agent_app/screens/home/sub_pages/commandes/controlPage/control_page.dart';
 import 'package:smart_planner_agent_app/screens/home/sub_pages/messaging/chat_page.dart';
 import 'package:smart_planner_agent_app/screens/home/sub_pages/profile/editPersonnelInfo/edit_personnel_info.dart';
 import 'package:smart_planner_agent_app/screens/home/sub_pages/profile/personaliseRolePage/personalise_role_page.dart';
+import 'package:smart_planner_agent_app/screens/home/sub_pages/profile/profile_page.dart';
 import 'package:smart_planner_agent_app/screens/home/sub_pages/profile/rolePage/role_page.dart';
 import 'package:smart_planner_agent_app/screens/splashscreen/splashscreen.dart';
+import 'package:smart_planner_agent_app/utils/fr_intl.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Firebase.initializeApp(
-
     options: DefaultFirebaseOptions.currentPlatform,
   );
   await FirebaseAuth.instance.authStateChanges().first;
@@ -66,8 +70,7 @@ Future<void> initializeNotifications() async {
       if (remoteMessage != null) {
         Get.defaultDialog(
             title: "Nouvelle Mise à jour",
-            middleText:
-                "Veuillez installer la nouvelle version disponible",
+            middleText: "Veuillez installer la nouvelle version disponible",
             confirm: ElevatedButton(
                 onPressed: () async {
                   await launchUrl(
@@ -80,8 +83,7 @@ Future<void> initializeNotifications() async {
       FirebaseMessaging.onMessage.listen((event) {
         Get.defaultDialog(
             title: "Nouvelle Mise à jour",
-            middleText:
-                "Veuillez installer la nouvelle version disponible",
+            middleText: "Veuillez installer la nouvelle version disponible",
             confirm: ElevatedButton(
                 onPressed: () async {
                   await launchUrl(
@@ -109,6 +111,12 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return Sizer(
       builder: (context, orientation, deviceType) => GetMaterialApp(
+        localizationsDelegates: const [
+          ...GlobalMaterialLocalizations.delegates,
+          SfLocalizationsFrDelegate()
+        ],
+        supportedLocales: const [Locale('fr')],
+        locale: const Locale('fr'),
         debugShowCheckedModeBanner: false,
         initialRoute: SplashScreen.id,
         title: 'Smart planner agent',
@@ -135,7 +143,12 @@ class MyApp extends StatelessWidget {
                     child: PersonaliseRolePage(),
                   )),
           GetPage(name: ChatPage.id, page: () => SafeArea(child: ChatPage())),
-          GetPage(name: SplashScreen.id, page: () => SplashScreen())
+          GetPage(name: SplashScreen.id, page: () => SplashScreen()),
+          GetPage(
+              name: ProfilePage.id, page: () => SafeArea(child: ProfilePage())),
+          GetPage(
+              name: AvailabilityPage.id,
+              page: () => SafeArea(child: AvailabilityPage()))
         ],
         initialBinding: BindingsBuilder(() {
           Get.put(AuthController(), permanent: true);
@@ -145,6 +158,7 @@ class MyApp extends StatelessWidget {
           Get.put(CommandeFetcher(), permanent: true);
           Get.put(ResidenceDetailController(), permanent: true);
           Get.put(RoleController(), permanent: true);
+          Get.lazyPut(() => MyAvailabilityController(), fenix: true);
         }),
         theme: ThemeData(
             primarySwatch: Colors.blue,
