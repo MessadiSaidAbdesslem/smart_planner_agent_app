@@ -50,31 +50,36 @@ class EditPersonnalInfoController extends GetxController {
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .get();
 
-    if (pictureIsSet.value) {
-      final newMetadata = SettableMetadata(
-        contentType: mimeType.value,
-      );
-      var root = FirebaseStorage.instance.ref();
+    try {
+      if (pictureIsSet.value) {
+        final newMetadata = SettableMetadata(
+          contentType: mimeType.value,
+        );
+        var root = FirebaseStorage.instance.ref();
 
-      String path =
-          "/users/${FirebaseAuth.instance.currentUser!.uid}.${mimeType.value.split('/')[1]}";
+        String path =
+            "/users/${DateTime.now().toString()}${FirebaseAuth.instance.currentUser!.uid}.${mimeType.value.split('/')[1]}";
 
-      var res =
-          await root.child(path).putFile(File(imagePath.value), newMetadata);
+        var res =
+            await root.child(path).putFile(File(imagePath.value), newMetadata);
 
-      await FirebaseFirestore.instance
-          .collection("users")
-          .doc(FirebaseAuth.instance.currentUser!.uid)
-          .update({"imageUrl": await res.ref.getDownloadURL()});
+        await FirebaseFirestore.instance
+            .collection("users")
+            .doc(FirebaseAuth.instance.currentUser!.uid)
+            .update({"imageUrl": await res.ref.getDownloadURL()});
 
-      // deleting old Image
+        // deleting old Image
 
-      String oldImageUrl = user.data()!['imageUrl'];
-      if (oldImageUrl !=
-          "https://firebasestorage.googleapis.com/v0/b/smartplaner-b98ed.appspot.com/o/users%2Fdefault.jpg?alt=media&token=324882eb-149c-4e68-b097-b415a3da8e08") {
-        var oldImageRef = FirebaseStorage.instance.refFromURL(oldImageUrl);
-        await oldImageRef.delete();
+        String oldImageUrl = user.data()!['imageUrl'];
+        if (oldImageUrl !=
+            "https://firebasestorage.googleapis.com/v0/b/smartplaner-b98ed.appspot.com/o/users%2Fdefault.jpg?alt=media&token=324882eb-149c-4e68-b097-b415a3da8e08") {
+          var oldImageRef = FirebaseStorage.instance.refFromURL(oldImageUrl);
+          await oldImageRef.delete();
+        }
       }
+    } catch (e) {
+      print(e);
+      isLoading.value = false;
     }
 
     await user.reference.update({

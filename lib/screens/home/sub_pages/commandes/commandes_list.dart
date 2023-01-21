@@ -88,6 +88,13 @@ class CommandeCard extends StatelessWidget {
     int percent = tempMap.isEmpty
         ? 0
         : (tempMap.length / groupe.chambersState.length * 100).toInt();
+
+    DateFormat formatter = DateFormat("dd-MM-yyyy");
+    String todaysDate = formatter.format(DateTime(
+        int.parse(groupe.date.split('/')[2]),
+        int.parse(groupe.date.split('/')[0]),
+        int.parse(groupe.date.split('/')[1])));
+
     return GestureDetector(
       onTap: () async {
         var res = await FirebaseFirestore.instance
@@ -132,8 +139,8 @@ class CommandeCard extends StatelessWidget {
                   children: [
                     Text(
                       '$percent %',
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 12.sp),
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 20),
                     ),
                     SizedBox(height: 1.w),
                   ],
@@ -142,7 +149,7 @@ class CommandeCard extends StatelessWidget {
             ),
           ),
           Positioned(
-            child: Text(groupe.date),
+            child: Text(todaysDate),
             bottom: 10,
             right: 5.w,
           )

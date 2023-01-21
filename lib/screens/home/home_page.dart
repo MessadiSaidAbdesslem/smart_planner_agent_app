@@ -12,7 +12,7 @@ class HomePage extends GetView<NavigatorController> {
 
   static const id = "/home_page";
 
-  List<Widget> pages = [CommandeList(), MessageriePage(), MorePage()];
+  List<Widget> pages = [CommandeList(), MorePage()];
 
   @override
   Widget build(BuildContext context) {
@@ -42,8 +42,6 @@ class CustomBottomNavigationBar extends StatelessWidget {
           },
           items: const [
             BottomNavigationBarItem(label: "Home", icon: Icon(Icons.home)),
-            BottomNavigationBarItem(
-                label: "Messagerie", icon: Icon(Icons.message)),
             BottomNavigationBarItem(label: "plus", icon: Icon(Icons.add))
           ]),
     );

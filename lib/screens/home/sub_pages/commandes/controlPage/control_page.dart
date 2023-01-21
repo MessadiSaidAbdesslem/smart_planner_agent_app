@@ -10,6 +10,7 @@ import 'package:smart_planner_agent_app/models/agent.dart';
 import 'package:smart_planner_agent_app/models/chambre.dart';
 import 'package:smart_planner_agent_app/models/commande.dart';
 import 'package:smart_planner_agent_app/models/groupe.dart';
+import 'package:smart_planner_agent_app/screens/home/sub_pages/messaging/chat_page.dart';
 import 'package:smart_planner_agent_app/widgets/error_message_widget.dart';
 
 class ControlPage extends StatelessWidget {
@@ -34,6 +35,22 @@ class ControlPage extends StatelessWidget {
       ),
       body: SingleChildScrollView(
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                ElevatedButton(
+                    onPressed: () {
+                      Get.toNamed(ChatPage.id, arguments: {
+                        'roomid': Get.arguments['groupId'],
+                        'roomname': "Messages"
+                      });
+                    },
+                    child: const Text("Messages")),
+              ],
+            ),
+          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -189,34 +206,50 @@ class ChamberRow extends StatelessWidget {
             Text(chamber.typologie),
             Obx(
               () => GestureDetector(
-                onTap: !authController.isSuperVisor.value
-                    ? () {
-                        Get.showSnackbar(const GetSnackBar(
-                          backgroundColor: Colors.red,
-                          messageText: Text(
-                            "Vous ne pouvez pas modifier l'état",
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        ));
-                        Future.delayed(const Duration(seconds: 3))
-                            .then((value) => Get.closeAllSnackbars());
+                onTap: (groupe.chambersState[chamber.id] == null ||
+                            groupe.chambersState[chamber.id] == "" ||
+                            groupe.chambersState[chamber.id] ==
+                                Groupe.retour) &&
+                        (!authController.isSuperVisor.value ||
+                            authController.isSuperVisor.value)
+                    ? () async {
+                        Get.defaultDialog(
+                            title: "Le ménage est-il fini ?",
+                            middleText:
+                                "Voulez-vous confirmer la fin du ménage ?",
+                            confirm: ElevatedButton(
+                                onPressed: () async {
+                                  var chambersState = groupe.chambersState;
+
+                                  chambersState[chamber.id ?? "-1"] =
+                                      Groupe.menageOK;
+
+                                  await FirebaseFirestore.instance
+                                      .collection("groups")
+                                      .doc(groupe.id)
+                                      .update({"chambersState": chambersState});
+                                  Get.back();
+                                },
+                                child: const Text("Oui")),
+                            cancel: OutlinedButton(
+                                onPressed: () {
+                                  Get.back();
+                                },
+                                child: const Text("Non")));
                       }
-                    : (groupe.chambersState[chamber.id] == null ||
-                                groupe.chambersState[chamber.id] == "" ||
-                                groupe.chambersState[chamber.id] ==
-                                    Groupe.retour) &&
+                    : groupe.chambersState[chamber.id] == Groupe.menageOK &&
                             authController.isSuperVisor.value
                         ? () async {
                             Get.defaultDialog(
                                 title: "Le ménage est-il fini ?",
                                 middleText:
-                                    "Voulez-vous confirmer la fin du ménage ?",
+                                    "Voulez-vous confirmer le contrôle du ménage ?",
                                 confirm: ElevatedButton(
                                     onPressed: () async {
                                       var chambersState = groupe.chambersState;
 
                                       chambersState[chamber.id ?? "-1"] =
-                                          Groupe.menageOK;
+                                          Groupe.controlOK;
 
                                       await FirebaseFirestore.instance
                                           .collection("groups")
@@ -227,12 +260,63 @@ class ChamberRow extends StatelessWidget {
                                     },
                                     child: const Text("Oui")),
                                 cancel: OutlinedButton(
-                                    onPressed: () {
+                                    onPressed: () async {
+                                      var chambersState = groupe.chambersState;
+
+                                      chambersState[chamber.id ?? "-1"] =
+                                          Groupe.retour;
+
+                                      await FirebaseFirestore.instance
+                                          .collection("groups")
+                                          .doc(groupe.id)
+                                          .update(
+                                              {"chambersState": chambersState});
                                       Get.back();
                                     },
                                     child: const Text("Non")));
                           }
-                        : () async {},
+                        : groupe.chambersState[chamber.id] ==
+                                    Groupe.controlOK &&
+                                authController.isSuperVisor.value
+                            ? () {
+                                Get.defaultDialog(
+                                    title: "Réinitialiser ?",
+                                    middleText:
+                                        "Voulez-vous confirmer la réinitialisation du ménage ?",
+                                    confirm: ElevatedButton(
+                                        onPressed: () async {
+                                          var chambersState =
+                                              groupe.chambersState;
+
+                                          chambersState[chamber.id ?? "-1"] =
+                                              "";
+
+                                          await FirebaseFirestore.instance
+                                              .collection("groups")
+                                              .doc(groupe.id)
+                                              .update({
+                                            "chambersState": chambersState
+                                          });
+                                          Get.back();
+                                        },
+                                        child: const Text("Oui")),
+                                    cancel: OutlinedButton(
+                                        onPressed: () {
+                                          Get.back();
+                                        },
+                                        child: const Text("Non")));
+                              }
+                            : () {
+                                Get.showSnackbar(const GetSnackBar(
+                                  backgroundColor: Colors.red,
+                                  messageText: Text(
+                                      "Veuillez demandé au chef d'équipe/contrôlleur de valider",
+                                      style: TextStyle(color: Colors.white)),
+                                ));
+
+                                Future.delayed(const Duration(seconds: 3))
+                                    .then((value) => Get.closeAllSnackbars());
+                              },
                 child: Container(
                   height: 30,
                   width: 30,

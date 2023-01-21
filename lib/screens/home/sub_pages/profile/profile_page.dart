@@ -51,7 +51,6 @@ class ProfilePage extends StatelessWidget {
                               icon: const Icon(Icons.settings))
                         ],
                       ),
-                      const InvitationRows(),
                       const SizedBox(
                         width: double.infinity,
                       ),
@@ -152,91 +151,6 @@ class ProfilePage extends StatelessWidget {
             return const Center(child: CircularProgressIndicator());
           }),
     );
-  }
-}
-
-class InvitationRows extends StatelessWidget {
-  const InvitationRows({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-        stream: FirebaseFirestore.instance
-            .collection("invitation")
-            .where("invited", isEqualTo: FirebaseAuth.instance.currentUser!.uid)
-            .snapshots(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.active) {
-            if (snapshot.hasData && snapshot.data != null) {
-              List<Widget> widgets = [];
-              for (int i = 0; i < snapshot.data!.docs.length; i++) {
-                widgets.add(Container(
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: Colors.black)),
-                  margin: EdgeInsets.symmetric(horizontal: 5.w, vertical: 2.w),
-                  padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 2.w),
-                  child: Row(
-                    children: [
-                      NameOfInviter(
-                          inviterId: snapshot.data!.docs[i].data()['inviter']),
-                      const Spacer(),
-                      Text(snapshot.data!.docs[i].data()['role']),
-                      const Spacer(),
-                      ElevatedButton(
-                        onPressed: () async {
-                          Get.defaultDialog(
-                              title: "Invitation",
-                              middleText:
-                                  "Voullez vous accepter cette invitation (role: ${snapshot.data!.docs[i].data()['role']}) ?",
-                              confirm: ElevatedButton(
-                                  onPressed: () async {
-                                    var res = await FirebaseFunctions.instance
-                                        .httpsCallable("handleInvitation")
-                                        .call({
-                                      "accept": true,
-                                      "invitationId": snapshot.data!.docs[i].id
-                                    });
-                                    Get.back();
-                                  },
-                                  child: const Text("Accepter")),
-                              cancel: ElevatedButton(
-                                  style: ButtonStyle(
-                                      backgroundColor:
-                                          MaterialStateProperty.all(
-                                              Colors.red)),
-                                  onPressed: () async {
-                                    var res = await FirebaseFunctions.instance
-                                        .httpsCallable("handleInvitation")
-                                        .call({
-                                      "accept": false,
-                                      "invitationId": snapshot.data!.docs[i].id
-                                    });
-                                    Get.back();
-                                  },
-                                  child: const Text("Refuser")));
-                        },
-                        child: const Text("Intéragir"),
-                      )
-                    ],
-                  ),
-                ));
-              }
-              if (widgets.isNotEmpty) {
-                widgets.insert(
-                    0,
-                    const Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: Text("Invitations :"),
-                    ));
-              }
-
-              return Column(children: widgets);
-            }
-          }
-
-          return Container();
-        });
   }
 }
 

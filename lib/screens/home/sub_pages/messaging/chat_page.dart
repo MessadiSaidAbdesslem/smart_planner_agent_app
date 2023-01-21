@@ -1,9 +1,14 @@
+import 'dart:typed_data';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:sizer/sizer.dart';
 
 class ChatPage extends StatelessWidget {
   const ChatPage({Key? key}) : super(key: key);
@@ -64,6 +69,56 @@ class ChatPage extends StatelessWidget {
                     messages: snapshot.data ?? [],
                     onSendPressed: (message) {
                       FirebaseChatCore.instance.sendMessage(message, roomId);
+                    },
+                    onAttachmentPressed: () async {
+                      ImageSource? sourceValue;
+                      await Get.bottomSheet(Container(
+                        color: Colors.white,
+                        width: 100.w,
+                        child: Column(
+                          children: [
+                            Card(
+                              child: ListTile(
+                                  title: const Text("Camera"),
+                                  onTap: () {
+                                    sourceValue = ImageSource.camera;
+                                    Get.back();
+                                  },
+                                  leading: const Icon(Icons.camera_alt)),
+                            ),
+                            Card(
+                              child: ListTile(
+                                  title: const Text("Gallery"),
+                                  onTap: () {
+                                    sourceValue = ImageSource.gallery;
+                                    Get.back();
+                                  },
+                                  leading: const Icon(Icons.image)),
+                            )
+                          ],
+                        ),
+                      ));
+                      if (sourceValue == null) return;
+
+                      XFile? res =
+                          await ImagePicker().pickImage(source: sourceValue!);
+                      if (res != null) {
+                        Uint8List imageBytes = await res.readAsBytes();
+                        var res2 = await FirebaseStorage.instance
+                            .ref('images/messages/')
+                            .child(roomId)
+                            .child(DateTime.now().toString() + res.name)
+                            .putData(imageBytes,
+                                SettableMetadata(contentType: res.mimeType));
+                        res2.ref.getDownloadURL();
+                        types.PartialImage imageMessage = types.PartialImage(
+                            name: res.name,
+                            size: await res.length(),
+                            uri: await res2.ref.getDownloadURL());
+
+                        FirebaseChatCore.instance
+                            .sendMessage(imageMessage, roomId);
+                      }
                     },
                     user: types.User(
                         id: FirebaseChatCore.instance.firebaseUser?.uid ?? ""));

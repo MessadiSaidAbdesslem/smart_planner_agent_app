@@ -28,6 +28,7 @@ import 'package:smart_planner_agent_app/screens/home/sub_pages/profile/editPerso
 import 'package:smart_planner_agent_app/screens/home/sub_pages/profile/personaliseRolePage/personalise_role_page.dart';
 import 'package:smart_planner_agent_app/screens/home/sub_pages/profile/profile_page.dart';
 import 'package:smart_planner_agent_app/screens/home/sub_pages/profile/rolePage/role_page.dart';
+import 'package:smart_planner_agent_app/screens/invitationPage/invitation_page.dart';
 import 'package:smart_planner_agent_app/screens/splashscreen/splashscreen.dart';
 import 'package:smart_planner_agent_app/utils/fr_intl.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -43,13 +44,15 @@ void main() async {
 
   // print('firebase messaging token');
   // print(await FirebaseMessaging.instance.getToken());
-  await initializeNotifications();
+  if (!kIsWeb) {
+    await initializeNotifications();
+  }
 
   runApp(const MyApp());
 }
 
 Future<void> initializeNotifications() async {
-  if (kIsWeb || Platform.isIOS) {
+  if (Platform.isIOS) {
     FirebaseMessaging messaging = FirebaseMessaging.instance;
 
     NotificationSettings settings = await messaging.requestPermission(
@@ -148,7 +151,10 @@ class MyApp extends StatelessWidget {
               name: ProfilePage.id, page: () => SafeArea(child: ProfilePage())),
           GetPage(
               name: AvailabilityPage.id,
-              page: () => SafeArea(child: AvailabilityPage()))
+              page: () => SafeArea(child: AvailabilityPage())),
+          GetPage(
+              name: InvitationPage.id,
+              page: () => SafeArea(child: InvitationPage()))
         ],
         initialBinding: BindingsBuilder(() {
           Get.put(AuthController(), permanent: true);
