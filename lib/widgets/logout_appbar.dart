@@ -38,7 +38,7 @@ PreferredSizeWidget LogoutAppBar() {
                       if (snapshot.connectionState == ConnectionState.active) {
                         if (snapshot.hasData && snapshot.data != null) {
                           if (snapshot.data!.docs.isNotEmpty) {
-                            Container(
+                            return Container(
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(10),
                                 color: Colors.red,
