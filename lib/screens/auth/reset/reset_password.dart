@@ -1,10 +1,13 @@
+import 'dart:math';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
-import 'package:sizer/sizer.dart';
 import 'package:smart_planner_agent_app/controllers/auth_controller.dart';
+import 'package:smart_planner_agent_app/utils/constants.dart';
 import 'package:smart_planner_agent_app/widgets/custom_text_form_field.dart';
+import 'package:smart_planner_agent_app/widgets/primary_button.dart';
+import 'package:sizer/sizer.dart';
 
 class ResetPasswordPage extends GetView<AuthController> {
   const ResetPasswordPage({Key? key}) : super(key: key);
@@ -16,48 +19,56 @@ class ResetPasswordPage extends GetView<AuthController> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
-        foregroundColor: Colors.green,
+        foregroundColor: Constants.primaryColor,
         elevation: 0,
-        title: const Text("Réinitialiser mot de passe"),
+        centerTitle: false,
+        title: const Text(
+          "Réinitialiser mot de passe",
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        leading: IconButton(
+            icon: const Icon(Icons.arrow_back_ios_new), onPressed: Get.back),
       ),
-      body: Center(
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 10.w),
           child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            margin: EdgeInsets.all(5.w),
-            padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 5.w),
-            decoration: BoxDecoration(
-                color: Colors.white, borderRadius: BorderRadius.circular(20)),
-            child: Form(
-              key: controller.resetPasswordFormKey,
-              child: Column(children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: const [
-                      Text("Veuillez entrer votre email:"),
-                    ],
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Image.asset("assets/forgot_password.png"),
+              const SizedBox(height: 22),
+              Form(
+                key: controller.resetPasswordFormKey,
+                child: Column(children: [
+                  const SizedBox(width: double.infinity),
+                  SizedBox(
+                    width: min(80.w, 600),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: const [
+                        Text("Veuillez entrer votre email:",
+                            style: TextStyle(fontSize: 18))
+                      ],
+                    ),
                   ),
-                ),
-                CustomTextFormField(
-                    placeholder: "email",
-                    controller: controller.emailController,
-                    validator: (value) {
-                      RegExp emailRegex =
-                          RegExp(r"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$");
-                      if ((value == null || value.isEmpty)) {
-                        return "champ obligatoire";
-                      } else if (emailRegex.firstMatch(value) == null) {
-                        return "Example: mail@domain.com";
-                      }
-                    }),
-                SizedBox(height: 1.w),
-                Obx(
-                  () => SizedBox(
-                    width: 50.w,
-                    child: ElevatedButton(
+                  const SizedBox(height: 11),
+                  CustomTextFormField(
+                      prefix: const Icon(Icons.email,
+                          color: Constants.primaryColor),
+                      placeholder: "email",
+                      controller: controller.emailController,
+                      validator: (value) {
+                        RegExp emailRegex =
+                            RegExp(r"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$");
+                        if ((value == null || value.isEmpty)) {
+                          return "champ obligatoire";
+                        } else if (emailRegex.firstMatch(value) == null) {
+                          return "Example: mail@domain.com";
+                        }
+                      }),
+                  const SizedBox(height: 22),
+                  Obx(
+                    () => PrimaryButton(
                         onPressed: () async {
                           if (controller.resetPasswordFormKey.currentState!
                               .validate()) {
@@ -84,13 +95,13 @@ class ResetPasswordPage extends GetView<AuthController> {
                                 ),
                               )
                             : const Text("Envoyer")),
-                  ),
-                )
-              ]),
-            ),
+                  )
+                ]),
+              ),
+            ],
           ),
-        ],
-      )),
+        ),
+      ),
     );
   }
 }

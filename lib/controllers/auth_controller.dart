@@ -14,7 +14,6 @@ class AuthController extends GetxController {
   TextEditingController emailController = TextEditingController();
   TextEditingController nomController = TextEditingController();
   TextEditingController prenomController = TextEditingController();
-  TextEditingController entrepriseController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
   GlobalKey<FormState> loginFormKey = GlobalKey<FormState>();
@@ -87,7 +86,6 @@ class AuthController extends GetxController {
     passwordController.dispose();
     nomController.dispose();
     prenomController.dispose();
-    entrepriseController.dispose();
     super.dispose();
   }
 
