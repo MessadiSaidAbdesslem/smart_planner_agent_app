@@ -33,7 +33,7 @@ class SignupPage extends GetView<AuthController> {
             SizedBox(
                 height: 140,
                 width: 140,
-                child: Image.asset("assets/logoalone.png")),
+                child: Image.asset("assets/logoalone2.png")),
             const Text("SmartBoard",
                 style: TextStyle(
                     fontSize: 32,
