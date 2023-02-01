@@ -9,6 +9,7 @@ import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:sizer/sizer.dart';
+import 'package:smart_planner_agent_app/widgets/rounded_rectangle_appbar.dart';
 
 class ChatPage extends StatelessWidget {
   const ChatPage({Key? key}) : super(key: key);
@@ -19,7 +20,7 @@ class ChatPage extends StatelessWidget {
   Widget build(BuildContext context) {
     String roomId = Get.arguments['roomid'];
     return Scaffold(
-      appBar: AppBar(title: Text(Get.arguments['roomname'] as String)),
+      appBar: RRAppBar(Get.arguments['roomname'] as String),
       body: StreamBuilder<types.Room>(
           stream: FirebaseChatCore.instance.room(roomId),
           builder: (context, snapshot) => StreamBuilder<List<types.Message>>(

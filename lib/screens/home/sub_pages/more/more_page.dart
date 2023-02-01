@@ -15,8 +15,8 @@ class MorePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(children: [
-      SizedBox(height: 3.w),
+    return Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
+      const SizedBox(height: 14, width: double.infinity),
       CustomListTile(
         icon: Icons.person,
         text: "Profile",

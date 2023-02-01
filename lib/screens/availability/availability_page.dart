@@ -7,6 +7,7 @@ import 'package:smart_planner_agent_app/controllers/my_availability_controller.d
 import 'package:smart_planner_agent_app/models/agent.dart';
 import 'package:smart_planner_agent_app/screens/availability/widgets/global_availability_widget.dart';
 import 'package:smart_planner_agent_app/widgets/error_message_widget.dart';
+import 'package:smart_planner_agent_app/widgets/rounded_rectangle_appbar.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
 class AvailabilityPage extends GetView<MyAvailabilityController> {
@@ -21,7 +22,7 @@ class AvailabilityPage extends GetView<MyAvailabilityController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Mes disponibilités")),
+      appBar: RRAppBar("Mes disponibilités"),
       body: Column(children: [
         GlobalStatusAvailability(stream: currentUserSnapshots),
         Obx(

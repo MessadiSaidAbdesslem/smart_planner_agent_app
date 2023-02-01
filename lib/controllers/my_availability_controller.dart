@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:smart_planner_agent_app/models/agent.dart';
+import 'package:smart_planner_agent_app/widgets/primary_button.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
 class MyAvailabilityController extends GetxController {
@@ -85,10 +86,11 @@ class MyAvailabilityController extends GetxController {
           details.date!.year.toString();
 
       Get.defaultDialog(
+          radius: 10,
           title: "Disponible ?",
           middleText:
               "Veuillez SVP précisez votre disponibilité pour la date suivante : $selectedDate",
-          confirm: ElevatedButton(
+          confirm: PrimaryButton(
             onPressed: () async {
               appointementsMap[currentDate.toString()] = true;
               await FirebaseFirestore.instance
@@ -104,9 +106,8 @@ class MyAvailabilityController extends GetxController {
               style: TextStyle(color: Colors.white),
             ),
           ),
-          cancel: ElevatedButton(
-              style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all(Colors.red)),
+          cancel: PrimaryButton(
+              isSecondary: true,
               onPressed: () async {
                 appointementsMap[currentDate.toString()] = false;
                 await FirebaseFirestore.instance
@@ -119,7 +120,6 @@ class MyAvailabilityController extends GetxController {
               },
               child: const Text(
                 "Indisponible",
-                style: TextStyle(color: Colors.white),
               )));
     }
   }

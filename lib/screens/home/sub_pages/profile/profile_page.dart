@@ -10,6 +10,8 @@ import 'package:smart_planner_agent_app/models/agent.dart';
 import 'package:smart_planner_agent_app/screens/home/sub_pages/profile/editPersonnelInfo/edit_personnel_info.dart';
 import 'package:smart_planner_agent_app/screens/home/sub_pages/profile/rolePage/role_page.dart';
 import 'package:smart_planner_agent_app/widgets/error_message_widget.dart';
+import 'package:smart_planner_agent_app/widgets/primary_button.dart';
+import 'package:smart_planner_agent_app/widgets/rounded_rectangle_appbar.dart';
 
 class ProfilePage extends StatelessWidget {
   ProfilePage({Key? key}) : super(key: key);
@@ -24,7 +26,15 @@ class ProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Profile")),
+      appBar: RRAppBar("Profile", actions: [
+        IconButton(
+            onPressed: () {
+              EditPersonnalInfoController infoController = Get.find();
+              infoController.clearAll();
+              Get.toNamed(EditPersonnelInfoPage.id);
+            },
+            icon: const Icon(Icons.settings))
+      ]),
       body: StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
           stream: currentUserSnapshots,
           builder: (context, snapshot) {
@@ -38,44 +48,32 @@ class ProfilePage extends StatelessWidget {
                 return SingleChildScrollView(
                   child: Column(
                     children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
+                      const SizedBox(width: double.infinity),
+                      Stack(
                         children: [
-                          IconButton(
-                              onPressed: () {
-                                EditPersonnalInfoController infoController =
-                                    Get.find();
-                                infoController.clearAll();
-                                Get.toNamed(EditPersonnelInfoPage.id);
-                              },
-                              icon: const Icon(Icons.settings))
-                        ],
-                      ),
-                      const SizedBox(
-                        width: double.infinity,
-                      ),
-                      Container(
-                        margin: EdgeInsets.only(top: 10.w, bottom: 5.w),
-                        height: 200,
-                        width: 200,
-                        clipBehavior: Clip.antiAliasWithSaveLayer,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(500)),
-                        child: Image.network(agent.imageUrl, fit: BoxFit.fill),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 5.w),
-                        child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              const Text("status : "),
-                              GestureDetector(
+                          Container(
+                            margin: const EdgeInsets.only(top: 16, bottom: 16),
+                            height: 100,
+                            width: 100,
+                            clipBehavior: Clip.antiAliasWithSaveLayer,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(500)),
+                            child:
+                                Image.network(agent.imageUrl, fit: BoxFit.fill),
+                          ),
+                          Positioned(
+                              height: 25,
+                              width: 25,
+                              bottom: 12,
+                              right: 10,
+                              child: GestureDetector(
                                 onTap: () {
                                   Get.defaultDialog(
+                                      radius: 10,
                                       title: "Modifier votre status",
                                       middleText:
                                           "Voullez-vous modifier votre status ?",
-                                      confirm: ElevatedButton(
+                                      confirm: PrimaryButton(
                                           onPressed: () async {
                                             await FirebaseFirestore.instance
                                                 .collection("users")
@@ -84,11 +82,8 @@ class ProfilePage extends StatelessWidget {
                                             Get.back();
                                           },
                                           child: const Text("Disponible")),
-                                      cancel: ElevatedButton(
-                                          style: ButtonStyle(
-                                              backgroundColor:
-                                                  MaterialStateProperty.all(
-                                                      Colors.red)),
+                                      cancel: PrimaryButton(
+                                          isSecondary: true,
                                           onPressed: () async {
                                             await FirebaseFirestore.instance
                                                 .collection("users")
@@ -99,47 +94,38 @@ class ProfilePage extends StatelessWidget {
                                           child: const Text("Indisponible")));
                                 },
                                 child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 10, vertical: 5),
                                   decoration: BoxDecoration(
+                                      border: Border.all(
+                                          color: Colors.white, width: 5),
                                       borderRadius: BorderRadius.circular(20),
                                       color: agent.isAvailable
                                           ? Colors.green
                                           : Colors.red),
-                                  child: Text(
-                                    agent.isAvailable
-                                        ? "disponible"
-                                        : "Indisponible",
-                                    style: const TextStyle(color: Colors.white),
-                                  ),
                                 ),
-                              )
-                            ]),
+                              ))
+                        ],
                       ),
                       Text(
                         agent.displayName,
-                        style: const TextStyle(fontSize: 24),
+                        style: const TextStyle(
+                            fontSize: 14, fontWeight: FontWeight.bold),
                       ),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 5.w),
-                        child: Row(
-                          children: [
-                            const Text("Role: "),
-                            GestureDetector(
-                              onTap: () {
-                                Get.toNamed(RolePage.id);
-                              },
-                              child: Container(
-                                clipBehavior: Clip.antiAliasWithSaveLayer,
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 5.w, vertical: 2.w),
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(20),
-                                    color: Colors.white),
-                                child: Text(agent.role ?? "N/A"),
-                              ),
-                            )
-                          ],
+                      GestureDetector(
+                        onTap: () {
+                          Get.toNamed(RolePage.id,
+                              arguments: {'id': agent.uid});
+                        },
+                        child: Container(
+                          clipBehavior: Clip.antiAliasWithSaveLayer,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              color: Colors.white),
+                          child: Text(
+                            agent.role ?? "N/A",
+                            style: TextStyle(
+                                color: Colors.black.withOpacity(0.5),
+                                fontWeight: FontWeight.w300),
+                          ),
                         ),
                       )
                     ],
@@ -175,7 +161,10 @@ class NameOfInviter extends StatelessWidget {
             if (snapshot.hasData && snapshot.data != null) {
               Agent inviter = Agent.fromMap(snapshot.data!.data()!);
 
-              return Text(inviter.displayName);
+              return Text(
+                inviter.displayName,
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              );
             }
           }
 

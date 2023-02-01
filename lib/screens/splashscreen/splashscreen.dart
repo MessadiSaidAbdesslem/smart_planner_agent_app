@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:smart_planner_agent_app/screens/auth/login/login_page.dart';
 import 'package:smart_planner_agent_app/screens/home/home_page.dart';
+import 'package:smart_planner_agent_app/utils/constants.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -28,6 +29,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xff353ad7),
       body: Center(
           child: Container(
               height: 150,

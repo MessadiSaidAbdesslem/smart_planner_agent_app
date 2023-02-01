@@ -31,6 +31,7 @@ import 'package:smart_planner_agent_app/screens/home/sub_pages/profile/rolePage/
 import 'package:smart_planner_agent_app/screens/invitationPage/invitation_page.dart';
 import 'package:smart_planner_agent_app/screens/splashscreen/splashscreen.dart';
 import 'package:smart_planner_agent_app/utils/fr_intl.dart';
+import 'package:smart_planner_agent_app/widgets/primary_button.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
@@ -72,9 +73,10 @@ Future<void> initializeNotifications() async {
           await FirebaseMessaging.instance.getInitialMessage();
       if (remoteMessage != null) {
         Get.defaultDialog(
+            radius: 10,
             title: "Nouvelle Mise à jour",
             middleText: "Veuillez installer la nouvelle version disponible",
-            confirm: ElevatedButton(
+            confirm: PrimaryButton(
                 onPressed: () async {
                   await launchUrl(
                       Uri.parse(
@@ -85,9 +87,10 @@ Future<void> initializeNotifications() async {
       }
       FirebaseMessaging.onMessage.listen((event) {
         Get.defaultDialog(
+            radius: 10,
             title: "Nouvelle Mise à jour",
             middleText: "Veuillez installer la nouvelle version disponible",
-            confirm: ElevatedButton(
+            confirm: PrimaryButton(
                 onPressed: () async {
                   await launchUrl(
                       Uri.parse(
@@ -168,7 +171,7 @@ class MyApp extends StatelessWidget {
         }),
         theme: ThemeData(
             primarySwatch: Colors.blue,
-            scaffoldBackgroundColor: const Color(0xFFF6F1F1),
+            scaffoldBackgroundColor: Colors.white,
             textTheme: GoogleFonts.poppinsTextTheme()),
       ),
     );

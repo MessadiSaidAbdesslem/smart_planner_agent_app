@@ -6,6 +6,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:smart_planner_agent_app/models/agent.dart';
+import 'package:smart_planner_agent_app/utils/constants.dart';
 
 class EditPersonnalInfoController extends GetxController {
   TextEditingController displayNamedTextEditingController =
@@ -20,6 +21,11 @@ class EditPersonnalInfoController extends GetxController {
   RxBool isLoading = false.obs;
 
   GlobalKey<FormState> editFormKey = GlobalKey<FormState>();
+
+  GlobalKey<FormState> passwordFormKey = GlobalKey<FormState>();
+  TextEditingController oldPassword = TextEditingController();
+  TextEditingController newPassword = TextEditingController();
+  TextEditingController confirmPassword = TextEditingController();
 
   @override
   void dispose() {
@@ -88,5 +94,38 @@ class EditPersonnalInfoController extends GetxController {
     });
 
     isLoading.value = false;
+  }
+
+  Future<void> updatePassword() async {
+    try {
+      await FirebaseAuth.instance.currentUser!.reauthenticateWithCredential(
+          EmailAuthProvider.credential(
+              email: FirebaseAuth.instance.currentUser!.email!,
+              password: oldPassword.text));
+    } catch (e) {
+      Get.closeAllSnackbars();
+      Get.showSnackbar(const GetSnackBar(
+          backgroundColor: Colors.red,
+          messageText: Text(
+            "mot de passe érroné",
+            style: TextStyle(color: Colors.white),
+          )));
+      Future.delayed(const Duration(seconds: 2))
+          .then((value) => Get.closeAllSnackbars());
+      return;
+    }
+    await FirebaseAuth.instance.currentUser!.updatePassword(newPassword.text);
+    Get.closeAllSnackbars();
+    Get.showSnackbar(const GetSnackBar(
+        backgroundColor: Constants.primaryColor,
+        messageText: Text(
+          "Mot de passe modifié avec success",
+          style: TextStyle(color: Colors.white),
+        )));
+    Future.delayed(const Duration(seconds: 2))
+        .then((value) => Get.closeAllSnackbars());
+    oldPassword.clear();
+    newPassword.clear();
+    confirmPassword.clear();
   }
 }

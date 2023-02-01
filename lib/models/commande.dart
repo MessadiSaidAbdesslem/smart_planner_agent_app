@@ -4,53 +4,59 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 
 class Commande {
-  LinkedHashMap<String, bool> cleanedRooms;
-  LinkedHashMap<String, bool> controllerRooms;
-  List<String> teams;
   LinkedHashMap<String, bool?> roomsAvailable;
+  List<String> priorityRooms;
+  bool created;
+  LinkedHashMap<String, dynamic> addedRooms;
+  LinkedHashMap<String, dynamic> deletedRooms;
 
   String date;
   List<String> requestedRooms;
   List<String> residence;
   String? id;
   Commande(
-      {required this.cleanedRooms,
-      required this.controllerRooms,
-      required this.date,
+      {required this.date,
       required this.requestedRooms,
       required this.residence,
-      required this.teams,
       required this.roomsAvailable,
+      required this.priorityRooms,
+      required this.created,
+      required this.addedRooms,
+      required this.deletedRooms,
       this.id});
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      'cleanedRooms': cleanedRooms,
-      'controllerRooms': controllerRooms,
       'date': date,
       'requestedRooms': requestedRooms,
       'residence': residence,
-      "teams": teams,
-      "roomsAvailable": roomsAvailable
+      "roomsAvailable": roomsAvailable,
+      "priorityRooms": priorityRooms,
+      "created": created,
+      "addedRooms": addedRooms,
+      "deletedRooms": deletedRooms
     };
   }
 
   factory Commande.fromMap(Map<String, dynamic> map) {
     return Commande(
-      cleanedRooms: LinkedHashMap<String, bool>.from(
-          (map['cleanedRooms'] as LinkedHashMap<String, dynamic>)),
-      controllerRooms: LinkedHashMap<String, bool>.from(
-          (map['controllerRooms'] as LinkedHashMap<String, dynamic>)),
-      roomsAvailable: map['roomsAvailable'] != null
-          ? LinkedHashMap<String, bool?>.from(
-              (map['roomsAvailable'] as LinkedHashMap<String, dynamic>))
-          : LinkedHashMap<String, bool?>(),
-      date: map['date'] as String,
-      requestedRooms:
-          List<String>.from((map['requestedRooms'] as List<dynamic>)),
-      teams: List<String>.from((map['teams'] as List<dynamic>)),
-      residence: List<String>.from((map['residence'] as List<dynamic>)),
-    );
+        roomsAvailable: map['roomsAvailable'] != null
+            ? LinkedHashMap<String, bool?>.from(
+                (map['roomsAvailable'] as LinkedHashMap<String, dynamic>))
+            : LinkedHashMap<String, bool?>(),
+        date: map['date'] as String,
+        requestedRooms:
+            List<String>.from((map['requestedRooms'] as List<dynamic>)),
+        residence: List<String>.from((map['residence'] as List<dynamic>)),
+        priorityRooms:
+            List<String>.from((map['priorityRooms'] as List<dynamic>? ?? [])),
+        created: map['created'] ?? true,
+        addedRooms: LinkedHashMap<String, dynamic>.from(
+            (map['addedRooms'] as LinkedHashMap<String, dynamic>?) ??
+                LinkedHashMap()),
+        deletedRooms: LinkedHashMap<String, dynamic>.from(
+            (map['deletedRooms'] as LinkedHashMap<String, dynamic>?) ??
+                LinkedHashMap()));
   }
 
   String toJson() => json.encode(toMap());
@@ -60,26 +66,20 @@ class Commande {
 
   @override
   String toString() {
-    return 'Commande(cleanedRooms: $cleanedRooms, controllerRooms: $controllerRooms, date: $date, requestedRooms: $requestedRooms, residence: $residence)';
+    return 'Commande(date: $date, requestedRooms: $requestedRooms, residence: $residence)';
   }
 
   @override
   bool operator ==(covariant Commande other) {
     if (identical(this, other)) return true;
 
-    return mapEquals(other.cleanedRooms, cleanedRooms) &&
-        mapEquals(other.controllerRooms, controllerRooms) &&
-        other.date == date &&
+    return other.date == date &&
         listEquals(other.requestedRooms, requestedRooms) &&
         other.residence == residence;
   }
 
   @override
   int get hashCode {
-    return cleanedRooms.hashCode ^
-        controllerRooms.hashCode ^
-        date.hashCode ^
-        requestedRooms.hashCode ^
-        residence.hashCode;
+    return date.hashCode ^ requestedRooms.hashCode ^ residence.hashCode;
   }
 }

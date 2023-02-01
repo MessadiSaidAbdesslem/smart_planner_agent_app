@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +11,7 @@ import 'package:smart_planner_agent_app/controllers/residence_detail_controller.
 import 'package:smart_planner_agent_app/models/groupe.dart';
 import 'package:smart_planner_agent_app/models/residence.dart';
 import 'package:smart_planner_agent_app/screens/home/sub_pages/commandes/controlPage/control_page.dart';
+import 'package:smart_planner_agent_app/utils/constants.dart';
 import 'package:smart_planner_agent_app/widgets/error_message_widget.dart';
 import 'package:step_progress_indicator/step_progress_indicator.dart';
 
@@ -27,16 +30,9 @@ class CommandeList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Row(
-          children: const [
-            Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Text("Commandes courantes:"),
-            ),
-          ],
-        ),
+        const SizedBox(height: 14, width: double.infinity),
         StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
             stream: currentUserGroupsSnapshot,
             builder: (context, snapshot) {
@@ -52,9 +48,14 @@ class CommandeList extends StatelessWidget {
                   }).toList();
 
                   if (widgets.isEmpty) {
-                    return const Expanded(
+                    return Expanded(
                       child: Center(
-                        child: Text("Vous n'avez aucune commande courante"),
+                        child: Column(
+                          children: [
+                            Image.asset("assets/empty.png"),
+                            const Text("Vous n'avez aucune commande courante"),
+                          ],
+                        ),
                       ),
                     );
                   }
@@ -89,7 +90,7 @@ class CommandeCard extends StatelessWidget {
         ? 0
         : (tempMap.length / groupe.chambersState.length * 100).toInt();
 
-    DateFormat formatter = DateFormat("dd-MM-yyyy");
+    DateFormat formatter = DateFormat("dd/MM/yyyy");
     String todaysDate = formatter.format(DateTime(
         int.parse(groupe.date.split('/')[2]),
         int.parse(groupe.date.split('/')[0]),
@@ -110,48 +111,70 @@ class CommandeCard extends StatelessWidget {
       },
       child: Container(
         clipBehavior: Clip.antiAliasWithSaveLayer,
-        height: 200,
-        width: 90.w,
-        margin: EdgeInsets.symmetric(horizontal: 5.w, vertical: 2.w),
+        height: 175,
+        width: min(80.w, 600),
+        margin: const EdgeInsets.symmetric(vertical: 7),
         decoration: BoxDecoration(
-            border: Border.all(color: Colors.black),
-            borderRadius: BorderRadius.circular(20)),
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(10),
+            boxShadow: [
+              BoxShadow(
+                  blurRadius: 10,
+                  color: Colors.black.withOpacity(0.2),
+                  offset: const Offset(0, 5))
+            ]),
         child: Stack(children: [
           ResidenceDataWidget(groupe: groupe),
-          Positioned(
-            top: 50,
-            left: 45.w - 50,
-            child: SizedBox(
-              height: 100,
-              width: 100,
-              child: CircularStepProgressIndicator(
-                padding: 0,
-                selectedColor: Colors.green,
-                unselectedColor: Colors.grey[200],
-                selectedStepSize: 22,
-                stepSize: 20,
-                roundedCap: (_, __) => true,
-                totalSteps:
-                    groupe.chambers.isEmpty ? 1 : groupe.chambers.length,
-                currentStep: groupe.chambers.isEmpty ? 0 : tempMap.length,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      '$percent %',
-                      style: const TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 20),
-                    ),
-                    SizedBox(height: 1.w),
-                  ],
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const SizedBox(width: double.infinity),
+              SizedBox(
+                height: 100,
+                width: 100,
+                child: CircularStepProgressIndicator(
+                  padding: 0,
+                  selectedColor: Colors.white,
+                  unselectedColor: Colors.white.withOpacity(0.2),
+                  selectedStepSize: 30,
+                  stepSize: 20,
+                  roundedCap: (_, __) => false,
+                  totalSteps:
+                      groupe.chambers.isEmpty ? 1 : groupe.chambers.length,
+                  currentStep: groupe.chambers.isEmpty ? 0 : tempMap.length,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        '$percent %',
+                        style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
+                            color: Colors.white),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
+            ],
           ),
           Positioned(
-            child: Text(todaysDate),
+            child: Row(
+              children: [
+                const Icon(
+                  Icons.calendar_month,
+                  color: Colors.white,
+                  size: 16,
+                ),
+                const SizedBox(width: 5),
+                Text(
+                  todaysDate,
+                  style: const TextStyle(color: Colors.white),
+                ),
+              ],
+            ),
             bottom: 10,
-            right: 5.w,
+            right: min(5.w, 37.5),
           )
         ]),
       ),
@@ -185,13 +208,26 @@ class ResidenceDataWidget extends StatelessWidget {
 
               return Stack(
                 children: [
-                  residence.image != ''
-                      ? Image.network(residence.image)
-                      : const Placeholder(),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      residence.image != ''
+                          ? Image.network(residence.image)
+                          : Image.asset("assets/placeholder.png"),
+                      const SizedBox(height: double.infinity)
+                    ],
+                  ),
+                  Expanded(
+                      child: Container(
+                    color: Colors.black.withOpacity(0.5),
+                  )),
                   Positioned(
-                    child: Text(residence.name),
-                    top: 10,
-                    left: 5.w,
+                    child: Text(residence.name,
+                        style: const TextStyle(
+                            color: Colors.white, fontWeight: FontWeight.bold)),
+                    bottom: 10,
+                    left: min(5.w, 37.5),
                   )
                 ],
               );

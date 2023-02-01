@@ -371,6 +371,14 @@ class SfLocalizationsFr extends SfLocalizations {
   @override
   // TODO: implement weeknumberLabel
   String get weeknumberLabel => throw UnimplementedError();
+
+  @override
+  // TODO: implement clearFilterDataGridFilteringLabel
+  String get clearFilterDataGridFilteringLabel => throw UnimplementedError();
+
+  @override
+  // TODO: implement fromDataGridFilteringLabel
+  String get fromDataGridFilteringLabel => throw UnimplementedError();
 }
 
 class SfLocalizationsFrDelegate extends LocalizationsDelegate<SfLocalizations> {
