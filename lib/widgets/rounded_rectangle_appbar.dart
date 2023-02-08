@@ -29,7 +29,7 @@ AppBar RRAppBar(String title,
             onPressed: () {
               Get.back();
             }),
-    toolbarHeight: 125,
+    toolbarHeight: backgroundImage != null ? 125 : 75,
     shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
             bottomLeft: Radius.circular(20), bottomRight: Radius.circular(20))),
